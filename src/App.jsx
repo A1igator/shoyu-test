@@ -26,28 +26,28 @@ const ContentContainer = styled.div`
 `;
 
 function App() {
-  const [buttonText, setButtonText] = useState('Connect Wallet');
+  const [address, setAddress] = useState('Connect Wallet');
   const [provider, setProvider] = useState();
 
   return (
     <Container>
       <ButtonContainer>
         <Button
-          disabled={!(buttonText === 'Connect Wallet')}
+          disabled={!(address === 'Connect Wallet')}
           onClick={async () => {
             const walletProvider = new ethers.providers.Web3Provider(window.ethereum);
             setProvider(walletProvider);
             await walletProvider.send('eth_requestAccounts', []);
             const signer = walletProvider.getSigner();
-            setButtonText(await signer.getAddress());
+            setAddress(await signer.getAddress());
           }}
         >
-          {buttonText}
+          {address}
         </Button>
       </ButtonContainer>
       <ContentContainer>
         <TokenList />
-        <UniswapBalance provider={provider} />
+        <UniswapBalance address={address} provider={provider} />
       </ContentContainer>
     </Container>
   );
