@@ -137,6 +137,7 @@ function UniswapBalance({ provider, address }) {
                   try {
                     const approveResults = await pairContract.approve('0xCaAbdD9Cf4b61813D4a52f980d6BC1B713FE66F5', LPAmount);
                     console.log(approveResults);
+                    await approveResults.wait();
                     console.log(
                       token1,
                       token2,
