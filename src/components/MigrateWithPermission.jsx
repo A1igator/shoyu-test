@@ -4,7 +4,6 @@ import { Token, TokenAmount } from '@uniswap/sdk';
 import { ethers } from 'ethers';
 import { signERC2612Permit } from 'eth-permit';
 import SushiRollABI from '../SushiRollABI';
-// import useWeb3 from '../hooks/useWeb3';
 
 function MigrateWithPermission({
   signer, pair, LPAmount, token1, token2, pairContract, updateBalance,
@@ -44,8 +43,8 @@ function MigrateWithPermission({
       token1,
       token2,
       LPAmount,
-      ethers.utils.parseUnits((token1Amounts * 0.95).toString(), 18).toString(),
-      ethers.utils.parseUnits((token2Amounts * 0.95).toString(), 18).toString(),
+      ethers.utils.parseUnits((token1Amounts * 0.995).toString(), 18).toString(),
+      ethers.utils.parseUnits((token2Amounts * 0.995).toString(), 18).toString(),
       approval.deadline,
       approval.v,
       approval.r,

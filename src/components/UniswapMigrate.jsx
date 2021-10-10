@@ -8,7 +8,6 @@ import { ethers } from 'ethers';
 import UniPosABI from '../UniPosABI';
 import MigrateWithApproval from './MigrateWithApproval';
 import MigrateWithPermission from './MigrateWithPermission';
-// import useWeb3 from '../hooks/useWeb3';
 
 const TokenInputContainer = styled.div`
   display: flex;

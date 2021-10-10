@@ -5,7 +5,6 @@ import {
 } from '@uniswap/sdk';
 import { ethers } from 'ethers';
 import SushiRollABI from '../SushiRollABI';
-// import useWeb3 from '../hooks/useWeb3';
 
 function MigrateWithApproval({
   signer, pair, LPAmount, token1, token2, pairContract, updateBalance,

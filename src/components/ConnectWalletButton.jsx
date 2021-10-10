@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from 'semantic-ui-react';
 import { ethers } from 'ethers';
-// import useWeb3 from '../hooks/useWeb3';
 
 const ButtonContainer = styled.div`
   display: flex;
