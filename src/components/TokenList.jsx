@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Table, Button } from 'semantic-ui-react';
+import copy from 'copy-to-clipboard';
 
 const ScrollContainer = styled.div`
   height: 50vh;
@@ -88,7 +89,7 @@ function TokenList() {
                   inverted
                   icon="copy"
                   onClick={() => {
-                    navigator.clipboard.writeText(token.address);
+                    copy(token.address);
                   }}
                 />
               </Table.Cell>
