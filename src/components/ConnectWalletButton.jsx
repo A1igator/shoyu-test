@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Button } from 'semantic-ui-react';
 import { ethers } from 'ethers';
@@ -13,24 +13,30 @@ const ConnectButton = styled(Button)`
   margin: 0 !important;
 `;
 
-function ConnectWalletButton({ setSigner }) {
-  const [address, setAddress] = useState('Connect Wallet');
-
+function ConnectWalletButton({ setSigner, userAddress, setUserAddress }) {
   const onConnectClick = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
     await provider.send('eth_requestAccounts', []);
+    provider.on('network', (newNetwork, oldNetwork) => {
+      // When a Provider makes its initial connection, it emits a "network"
+      // event with a null oldNetwork along with the newNetwork. So, if the
+      // oldNetwork exists, it represents a changing network
+      if (oldNetwork) {
+        window.location.reload();
+      }
+    });
     const signer = provider.getSigner();
     setSigner(signer);
-    setAddress(await signer.getAddress());
+    setUserAddress(await signer.getAddress());
   };
 
   return (
     <ButtonContainer>
       <ConnectButton
-        disabled={!(address === 'Connect Wallet')}
+        disabled={!(userAddress === 'Connect Wallet')}
         onClick={onConnectClick}
       >
-        {address}
+        {userAddress}
       </ConnectButton>
     </ButtonContainer>
   );

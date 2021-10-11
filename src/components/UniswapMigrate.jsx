@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
-import {
-  ChainId, Token, Fetcher,
-} from '@uniswap/sdk';
 import { ethers } from 'ethers';
-import UniPosABI from '../UniPosABI';
 import MigrateWithApproval from './MigrateWithApproval';
-import MigrateWithPermission from './MigrateWithPermission';
+import useMigrate from '../hooks/useMigrate';
+import useMigrateWithPermit from '../hooks/useMigrateWithPermit';
+import { useUniPosContract } from '../hooks/useContract';
+import useUniPair from '../hooks/useUniPair';
 
 const TokenInputContainer = styled.div`
   display: flex;
@@ -45,83 +44,72 @@ const Container = styled.div`
   width: 55vw;
 `;
 
-function UniswapMigrate({ signer }) {
+function UniswapMigrate({ signer, userAddress }) {
   const [uniswapBalance, setUniswapBalance] = useState();
-  const [pair, setPair] = useState();
-  const [pairContract, setPairContract] = useState();
-  const [token1, setToken1] = useState();
-  const [token2, setToken2] = useState();
-  const [LPAmount, setLPAmount] = useState(0);
+  const [tokenA, setTokenA] = useState();
+  const [tokenB, setTokenB] = useState();
+  const [amountToMigrate, setAmountToMigrate] = useState(0);
   const [signatureUsed, setSignatureUsed] = useState(false);
 
-  const updateBalance = async (uniPairContract) => {
-    const address = await signer.getAddress();
-    const balance = await uniPairContract.balanceOf(address);
+  const { pair } = useUniPair(tokenA, tokenB, signer);
+  const pairContract = useUniPosContract(pair?.liquidityToken.address, signer?.provider);
+
+  const updateBalance = async () => {
+    const balance = await pairContract.balanceOf(userAddress);
     setUniswapBalance(balance);
   };
 
   useEffect(async () => {
-    if (!(token1 && token2)) {
-      return;
-    }
-    const uniPair = await Fetcher.fetchPairData(
-      new Token(ChainId.KOVAN, token1, 18),
-      new Token(ChainId.KOVAN, token2, 18),
-      signer,
-    );
-    setPair(uniPair);
-    const uniPairContract = new ethers.Contract(
-      uniPair.liquidityToken.address,
-      UniPosABI,
-      signer,
-    );
-    setPairContract(uniPairContract);
-    await updateBalance(uniPairContract);
-  }, [token1, token2]);
+    if (!pairContract) return;
+    await updateBalance();
+  }, [pairContract]);
+
+  // console.log(signer?.provider._network);
 
   return (
     <Container>
-      {signer ? (
+      {!signer && <h1>Connect Wallet First</h1>}
+      {signer && signer.provider?._network?.chainId !== 42 && <h1>Switch Network to Kovan</h1>}
+      {signer && signer.provider?._network?.chainId === 42 && (
         <>
           <TokenInputContainer>
             <TokenInput
               placeholder="token 1"
               onChange={(_, { value }) => {
-                setToken1(value);
+                setTokenA(value);
               }}
               inverted
             />
             <TokenInput
               placeholder="token 2"
               onChange={(_, { value }) => {
-                setToken2(value);
+                setTokenB(value);
               }}
               inverted
             />
           </TokenInputContainer>
           {uniswapBalance && (
-          <>
-            <BottomContainer>
-              <Input
-                inverted
-                value={ethers.utils.formatUnits(LPAmount, 18)}
-                onChange={(_, { value }) => {
-                  if (!Number.isNaN(+value)) {
-                    setLPAmount(ethers.utils.parseUnits(value, 18));
+            <>
+              <BottomContainer>
+                <Input
+                  inverted
+                  value={ethers.utils.formatUnits(amountToMigrate, 18)}
+                  onChange={(_, { value }) => {
+                    if (!Number.isNaN(+value)) {
+                      setAmountToMigrate(ethers.utils.parseUnits(value, 18));
+                    }
+                  }}
+                  action={
+                    {
+                      inverted: true,
+                      content: `Total Balance: ${ethers.utils.formatUnits(uniswapBalance, 18) || ''}`,
+                      onClick: () => {
+                        setAmountToMigrate(uniswapBalance);
+                      },
+                    }
                   }
-                }}
-                action={
-                  {
-                    inverted: true,
-                    content: `Total Balance: ${ethers.utils.formatUnits(uniswapBalance, 18) || ''}`,
-                    onClick: () => {
-                      setLPAmount(uniswapBalance);
-                    },
-                  }
-                }
-              />
-            </BottomContainer>
-            <BottomContainer>
+                />
+              </BottomContainer>
               <ButtonContainer>
                 <CheckBoxContainer>
                   <Checkbox onChange={() => {
@@ -130,33 +118,18 @@ function UniswapMigrate({ signer }) {
                   />
                   <div>Use signature</div>
                 </CheckBoxContainer>
-                {signatureUsed ? (
-                  <MigrateWithPermission
-                    signer={signer}
-                    pair={pair}
-                    pairContract={pairContract}
-                    LPAmount={LPAmount}
-                    token1={token1}
-                    token2={token2}
-                    updateBalance={updateBalance}
-                  />
-                ) : (
-                  <MigrateWithApproval
-                    signer={signer}
-                    pair={pair}
-                    pairContract={pairContract}
-                    LPAmount={LPAmount}
-                    token1={token1}
-                    token2={token2}
-                    updateBalance={updateBalance}
-                  />
-                )}
+                <MigrateWithApproval
+                  signer={signer}
+                  pair={pair}
+                  amountToMigrate={amountToMigrate}
+                  useMigrate={signatureUsed ? useMigrateWithPermit : useMigrate}
+                  updateBalance={updateBalance}
+                />
               </ButtonContainer>
-            </BottomContainer>
-          </>
+            </>
           )}
         </>
-      ) : <h1>Connect Wallet First</h1>}
+      )}
     </Container>
   );
 }

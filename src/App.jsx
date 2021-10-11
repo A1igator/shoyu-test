@@ -20,13 +20,18 @@ const ContentContainer = styled.div`
 
 function App() {
   const [signer, setSigner] = useState();
+  const [userAddress, setUserAddress] = useState('Connect Wallet');
 
   return (
     <Container>
-      <ConnectWalletButton setSigner={setSigner} />
+      <ConnectWalletButton
+        setSigner={setSigner}
+        setUserAddress={setUserAddress}
+        userAddress={userAddress}
+      />
       <ContentContainer>
         <TokenList />
-        <UniswapMigrate signer={signer} />
+        <UniswapMigrate signer={signer} userAddress={userAddress} />
       </ContentContainer>
     </Container>
   );

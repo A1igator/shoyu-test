@@ -14,7 +14,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2018,
+    ecmaVersion: 2020,
     sourceType: 'module',
   },
   plugins: [
@@ -23,5 +23,6 @@ module.exports = {
   rules: {
     'react/prop-types': 0,
     'no-underscore-dangle': 0,
+    'consistent-return': 0,
   },
 };

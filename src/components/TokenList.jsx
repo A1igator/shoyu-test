@@ -78,7 +78,7 @@ function TokenList() {
         </Table.Header>
         <Table.Body>
           {tokens.map((token) => (
-            <Table.Row>
+            <Table.Row key={token.name}>
               <Table.Cell>
                 <b>{token.symbol}</b>
                 <TokenName>{token.name}</TokenName>
