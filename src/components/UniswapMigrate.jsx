@@ -1,5 +1,3 @@
-/* eslint no-underscore-dangle: 0 */
-
 import React, { useEffect, useState } from 'react';
 import { Checkbox, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
