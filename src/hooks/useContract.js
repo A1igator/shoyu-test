@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import SushiRollABI from '../ABIs/SushiRollABI';
 import UniPosABI from '../ABIs/UniPosABI';
 
-function useContract(address, ABI, signerOrProvider) {
+export function useContract(address, ABI, signerOrProvider) {
   return useMemo(
     () => {
       if (!(address && ABI && signerOrProvider)) return undefined;

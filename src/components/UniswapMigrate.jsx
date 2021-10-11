@@ -48,7 +48,7 @@ const TokenInput = styled(Input)`
   width: 380px;
 `;
 
-function UniswapMigrate({ signer, userAddress }) {
+function UniswapMigrate({ signer, userAddress, chainId }) {
   const [uniswapBalance, setUniswapBalance] = useState();
   const [tokenA, setTokenA] = useState();
   const [tokenB, setTokenB] = useState();
@@ -56,7 +56,7 @@ function UniswapMigrate({ signer, userAddress }) {
   const [signatureSelected, setSignatureSelected] = useState(false);
   const [error, setError] = useState();
 
-  const { pair } = useUniPair(tokenA, tokenB, signer, setError);
+  const { pair } = useUniPair(tokenA, tokenB, signer, setError, chainId);
   const pairContract = useUniPosContract(pair?.liquidityToken.address, signer?.provider);
 
   const updateBalance = async () => {
@@ -67,13 +67,13 @@ function UniswapMigrate({ signer, userAddress }) {
   useEffect(async () => {
     if (!pairContract) return;
     await updateBalance();
-  }, [pairContract]);
+  }, [pairContract, userAddress]);
 
   return (
     <Container>
       {!signer && <h1>Connect Wallet First</h1>}
-      {signer && signer.provider?._network?.chainId !== 42 && <h1>Switch Network to Kovan</h1>}
-      {signer && signer.provider?._network?.chainId === 42 && (
+      {signer && chainId !== 42 && <h1>Switch Network to Kovan</h1>}
+      {signer && chainId === 42 && (
         <>
           <TokenInputContainer>
             <TokenInput

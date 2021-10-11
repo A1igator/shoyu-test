@@ -13,7 +13,12 @@ const ConnectButton = styled(Button)`
   margin: 0 !important;
 `;
 
-function ConnectWalletButton({ setSigner, userAddress, setUserAddress }) {
+function ConnectWalletButton({
+  setSigner,
+  userAddress,
+  setUserAddress,
+  setChainId,
+}) {
   const onConnectClick = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
     await provider.send('eth_requestAccounts', []);
@@ -28,6 +33,8 @@ function ConnectWalletButton({ setSigner, userAddress, setUserAddress }) {
     const signer = provider.getSigner();
     setSigner(signer);
     setUserAddress(await signer.getAddress());
+    const network = await signer.provider.getNetwork();
+    setChainId(network.chainId);
   };
 
   return (

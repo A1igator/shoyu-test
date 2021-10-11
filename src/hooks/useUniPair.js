@@ -1,7 +1,7 @@
 import { Fetcher } from '@uniswap/sdk';
 import { useEffect, useState } from 'react';
 
-const useUniPair = (tokenA, tokenB, signer, setError) => {
+const useUniPair = (tokenA, tokenB, signer, setError, chainId) => {
   const [pair, setPair] = useState();
 
   useEffect(async () => {
@@ -10,13 +10,13 @@ const useUniPair = (tokenA, tokenB, signer, setError) => {
     let tokenBData;
     let uniPair;
     try {
-      tokenAData = await Fetcher.fetchTokenData(signer.provider?._network?.chainId, tokenA);
+      tokenAData = await Fetcher.fetchTokenData(chainId, tokenA);
     } catch (err) {
       setError('Token A: Invalid Token Address');
       return;
     }
     try {
-      tokenBData = await Fetcher.fetchTokenData(signer.provider?._network?.chainId, tokenB);
+      tokenBData = await Fetcher.fetchTokenData(chainId, tokenB);
     } catch (err) {
       setError('Token B: Invalid Token Address');
       return;
@@ -29,7 +29,7 @@ const useUniPair = (tokenA, tokenB, signer, setError) => {
     }
     setPair(uniPair);
     setError(undefined);
-  }, [tokenA, tokenB]);
+  }, [tokenA, tokenB, signer, chainId]);
 
   return { pair };
 };

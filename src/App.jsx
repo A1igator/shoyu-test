@@ -21,6 +21,7 @@ const ContentContainer = styled.div`
 function App() {
   const [signer, setSigner] = useState();
   const [userAddress, setUserAddress] = useState('Connect Wallet');
+  const [chainId, setChainId] = useState();
 
   return (
     <Container>
@@ -28,10 +29,11 @@ function App() {
         setSigner={setSigner}
         setUserAddress={setUserAddress}
         userAddress={userAddress}
+        setChainId={setChainId}
       />
       <ContentContainer>
         <TokenList />
-        <UniswapMigrate signer={signer} userAddress={userAddress} />
+        <UniswapMigrate signer={signer} userAddress={userAddress} chainId={chainId} />
       </ContentContainer>
     </Container>
   );
