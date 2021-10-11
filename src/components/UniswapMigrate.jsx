@@ -1,3 +1,5 @@
+/* eslint no-underscore-dangle: 0 */
+
 import React, { useEffect, useState } from 'react';
 import { Checkbox, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -7,6 +9,15 @@ import useMigrate from '../hooks/useMigrate';
 import useMigrateWithPermit from '../hooks/useMigrateWithPermit';
 import { useUniPosContract } from '../hooks/useContract';
 import useUniPair from '../hooks/useUniPair';
+
+const Container = styled.div`
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  height: 50vh;
+  width: 55vw;
+`;
 
 const TokenInputContainer = styled.div`
   display: flex;
@@ -37,15 +48,6 @@ const CheckBoxContainer = styled.div`
 
 const TokenInput = styled(Input)`
   width: 380px;
-`;
-
-const Container = styled.div`
-  display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-  align-items: center;
-  height: 50vh;
-  width: 55vw;
 `;
 
 function UniswapMigrate({ signer, userAddress }) {

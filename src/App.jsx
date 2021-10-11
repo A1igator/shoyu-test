@@ -15,7 +15,7 @@ const ContentContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  height: calc(100vh - 38px);
+  height: calc(100vh - 36px);
 `;
 
 function App() {
