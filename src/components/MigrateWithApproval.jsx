@@ -2,14 +2,29 @@ import React from 'react';
 import { Button } from 'semantic-ui-react';
 
 function MigrateWithApproval({
-  signer, pair, amountToMigrate, updateBalance, useMigrate,
+  signer,
+  pair,
+  amountToMigrate,
+  updateBalance,
+  useMigrate,
+  setError,
+  userAddress,
+  signatureSelected,
 }) {
   const {
     loading,
     approval,
     onMigrateClick,
     onApproveClick,
-  } = useMigrate(signer, pair, amountToMigrate, updateBalance);
+  } = useMigrate(
+    signer,
+    pair,
+    amountToMigrate,
+    updateBalance,
+    setError,
+    userAddress,
+    signatureSelected,
+  );
 
   return (
     <Button

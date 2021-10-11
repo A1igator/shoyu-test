@@ -1,31 +1,21 @@
-import { Token, TokenAmount } from '@uniswap/sdk';
+import { TokenAmount } from '@uniswap/sdk';
 import memoize from 'memoizee';
 
 const getTokenLiqudity = (
-  tokenAddresses,
   totalSupply,
   amountToMigrate,
   pair,
-) => tokenAddresses.map((tokenAddress) => {
-  const { liquidityToken } = pair;
-  const tokenLiquidity = pair.getLiquidityValue(
-    new Token(
-      liquidityToken.chainId,
-      tokenAddress,
-      liquidityToken.decimals,
-    ),
-    new TokenAmount(new Token(
-      liquidityToken.chainId,
-      liquidityToken.address,
-      liquidityToken.decimals,
-    ), totalSupply),
-    new TokenAmount(new Token(
-      liquidityToken.chainId,
-      liquidityToken.address,
-      liquidityToken.decimals,
-    ), amountToMigrate),
-  );
-  return ((tokenLiquidity.numerator / tokenLiquidity.denominator) * 0.995).toFixed(18);
-});
+) => {
+  const { liquidityToken, tokenAmounts } = pair;
+  const tokenAddresses = [tokenAmounts[0], tokenAmounts[1]];
+  return tokenAddresses.map((tokenAmount) => {
+    const tokenLiquidity = pair.getLiquidityValue(
+      tokenAmount.currency,
+      new TokenAmount(liquidityToken, totalSupply),
+      new TokenAmount(liquidityToken, amountToMigrate),
+    );
+    return ((tokenLiquidity.numerator / tokenLiquidity.denominator) * 0.995).toFixed(18);
+  });
+};
 
 export default memoize(getTokenLiqudity);

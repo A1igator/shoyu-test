@@ -17,6 +17,10 @@ const TokenInputContainer = styled.div`
   flex: 2;
 `;
 
+const Error = styled.div`
+  color: red;
+`;
+
 const BottomContainer = styled.div`
   flex: 1;
 `;
@@ -49,9 +53,10 @@ function UniswapMigrate({ signer, userAddress }) {
   const [tokenA, setTokenA] = useState();
   const [tokenB, setTokenB] = useState();
   const [amountToMigrate, setAmountToMigrate] = useState(0);
-  const [signatureUsed, setSignatureUsed] = useState(false);
+  const [signatureSelected, setSignatureSelected] = useState(false);
+  const [error, setError] = useState();
 
-  const { pair } = useUniPair(tokenA, tokenB, signer);
+  const { pair } = useUniPair(tokenA, tokenB, signer, setError);
   const pairContract = useUniPosContract(pair?.liquidityToken.address, signer?.provider);
 
   const updateBalance = async () => {
@@ -63,8 +68,6 @@ function UniswapMigrate({ signer, userAddress }) {
     if (!pairContract) return;
     await updateBalance();
   }, [pairContract]);
-
-  // console.log(signer?.provider._network);
 
   return (
     <Container>
@@ -88,14 +91,14 @@ function UniswapMigrate({ signer, userAddress }) {
               inverted
             />
           </TokenInputContainer>
-          {uniswapBalance && (
+          {uniswapBalance && !error?.includes(':') && (
             <>
               <BottomContainer>
                 <Input
                   inverted
                   value={ethers.utils.formatUnits(amountToMigrate, 18)}
                   onChange={(_, { value }) => {
-                    if (!Number.isNaN(+value)) {
+                    if (value !== '' && !Number.isNaN(+value) && ethers.utils.parseUnits(value, 18).lte(uniswapBalance)) {
                       setAmountToMigrate(ethers.utils.parseUnits(value, 18));
                     }
                   }}
@@ -113,7 +116,7 @@ function UniswapMigrate({ signer, userAddress }) {
               <ButtonContainer>
                 <CheckBoxContainer>
                   <Checkbox onChange={() => {
-                    setSignatureUsed(!signatureUsed);
+                    setSignatureSelected(!signatureSelected);
                   }}
                   />
                   <div>Use signature</div>
@@ -122,12 +125,16 @@ function UniswapMigrate({ signer, userAddress }) {
                   signer={signer}
                   pair={pair}
                   amountToMigrate={amountToMigrate}
-                  useMigrate={signatureUsed ? useMigrateWithPermit : useMigrate}
+                  useMigrate={signatureSelected ? useMigrateWithPermit : useMigrate}
                   updateBalance={updateBalance}
+                  setError={setError}
+                  userAddress={userAddress}
+                  signatureSelected={signatureSelected}
                 />
               </ButtonContainer>
             </>
           )}
+          <Error>{error}</Error>
         </>
       )}
     </Container>
