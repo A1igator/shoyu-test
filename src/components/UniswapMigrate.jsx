@@ -32,7 +32,7 @@ const Error = styled.div`
   color: red;
 `;
 
-const BottomContainer = styled.div`
+const AmountToMigrateContainer = styled.div`
   flex: 1;
 `;
 
@@ -95,7 +95,7 @@ function UniswapMigrate({ signer, userAddress }) {
           </TokenInputContainer>
           {uniswapBalance && !error?.includes(':') && (
             <>
-              <BottomContainer>
+              <AmountToMigrateContainer>
                 <Input
                   inverted
                   value={ethers.utils.formatUnits(amountToMigrate, 18)}
@@ -114,7 +114,7 @@ function UniswapMigrate({ signer, userAddress }) {
                     }
                   }
                 />
-              </BottomContainer>
+              </AmountToMigrateContainer>
               <ButtonContainer>
                 <CheckBoxContainer>
                   <Checkbox onChange={() => {
