@@ -65,7 +65,7 @@ const useMigrateWithPermit = (
     const deadline = Math.round(Date.now() / 1000 + 10 * 60).toString();
     try {
       signResult = await signERC2612Permit(
-        window.ethereum,
+        signer.provider,
         liquidityToken.address,
         userAddress,
         sushiRollContract.address,

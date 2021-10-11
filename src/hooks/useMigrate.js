@@ -22,7 +22,7 @@ const useMigrate = (
 
   useEffect(async () => {
     const approvedAmount = await pairContract.allowance(userAddress, sushiRollContract.address);
-    if (approvedAmount.gte(amountToMigrate)) {
+    if (!approvedAmount.eq(0) && approvedAmount.gte(amountToMigrate)) {
       setApproval(true);
     } else {
       setApproval(false);
