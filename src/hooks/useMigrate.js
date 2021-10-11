@@ -32,7 +32,7 @@ const useMigrate = (
   const onMigrateClick = async () => {
     let migrateTx;
     const totalSupply = await pairContract.totalSupply();
-    const [tokenAAmounts, tokenBAmounts] = getTokenLiqudity(
+    const [tokenALiquidity, tokenBLiquidity] = getTokenLiqudity(
       totalSupply,
       amountToMigrate,
       pair,
@@ -42,8 +42,8 @@ const useMigrate = (
         tokenAmounts[0].currency.address,
         tokenAmounts[1].currency.address,
         amountToMigrate,
-        ethers.utils.parseUnits(tokenAAmounts, tokenAmounts[0].currency.decimal),
-        ethers.utils.parseUnits(tokenBAmounts, tokenAmounts[1].currency.decimal),
+        ethers.utils.parseUnits(tokenALiquidity, tokenAmounts[0].currency.decimals),
+        ethers.utils.parseUnits(tokenBLiquidity, tokenAmounts[1].currency.decimals),
         Math.round(Date.now() / 1000 + 10 * 60).toString(),
       );
     } catch (err) {

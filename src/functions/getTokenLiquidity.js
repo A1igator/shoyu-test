@@ -14,7 +14,8 @@ const getTokenLiqudity = (
       new TokenAmount(liquidityToken, totalSupply),
       new TokenAmount(liquidityToken, amountToMigrate),
     );
-    return ((tokenLiquidity.numerator / tokenLiquidity.denominator) * 0.995).toFixed(18);
+    return ((tokenLiquidity.numerator / tokenLiquidity.denominator) * 0.995)
+      .toFixed(tokenAmount.currency.decimals);
   });
 };
 

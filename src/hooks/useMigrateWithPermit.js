@@ -28,7 +28,7 @@ const useMigrateWithPermit = (
   const onMigrateClick = async () => {
     let migrateTx;
     const totalSupply = await pairContract.totalSupply();
-    const [tokenAAmounts, tokenBAmounts] = getTokenLiqudity(
+    const [tokenALiquidity, tokenBLiquidity] = getTokenLiqudity(
       totalSupply,
       amountToMigrate,
       pair,
@@ -38,8 +38,8 @@ const useMigrateWithPermit = (
         tokenAmounts[0].currency.address,
         tokenAmounts[1].currency.address,
         amountToMigrate,
-        ethers.utils.parseUnits(tokenAAmounts, tokenAmounts[0].currency.decimal),
-        ethers.utils.parseUnits(tokenBAmounts, tokenAmounts[1].currency.decimal),
+        ethers.utils.parseUnits(tokenALiquidity, tokenAmounts[0].currency.decimals),
+        ethers.utils.parseUnits(tokenBLiquidity, tokenAmounts[1].currency.decimals),
         approval.deadline,
         approval.v,
         approval.r,
