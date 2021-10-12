@@ -10,13 +10,13 @@ const useUniPair = (tokenA, tokenB, signer, setError, chainId) => {
     let tokenBData;
     let uniPair;
     try {
-      tokenAData = await Fetcher.fetchTokenData(chainId, tokenA);
+      tokenAData = await Fetcher.fetchTokenData(chainId, tokenA, signer);
     } catch (err) {
       setError('Token A: Invalid Token Address');
       return;
     }
     try {
-      tokenBData = await Fetcher.fetchTokenData(chainId, tokenB);
+      tokenBData = await Fetcher.fetchTokenData(chainId, tokenB, signer);
     } catch (err) {
       setError('Token B: Invalid Token Address');
       return;
