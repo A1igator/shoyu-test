@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Checkbox, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
@@ -59,15 +59,15 @@ function UniswapMigrate({ signer, userAddress, chainId }) {
   const { pair } = useUniPair(tokenA, tokenB, signer, setError, chainId);
   const pairContract = useUniPosContract(pair?.liquidityToken.address, signer?.provider);
 
-  const updateBalance = async () => {
+  const updateBalance = useCallback(async () => {
+    if (!pairContract) return;
     const balance = await pairContract.balanceOf(userAddress);
     setUniswapBalance(balance);
-  };
-
-  useEffect(async () => {
-    if (!pairContract) return;
-    await updateBalance();
   }, [pairContract, userAddress]);
+
+  useEffect(() => {
+    updateBalance();
+  }, [updateBalance]);
 
   return (
     <Container>

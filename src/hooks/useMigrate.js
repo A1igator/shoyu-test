@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import getTokenLiqudity from '../functions/getTokenLiquidity';
 import { useSushiRollContract, useUniPosContract } from './useContract';
@@ -20,14 +20,18 @@ const useMigrate = (
   const pairContract = useUniPosContract(liquidityToken.address, signer);
   const sushiRollContract = useSushiRollContract(signer);
 
-  useEffect(async () => {
+  const checkAllowance = useCallback(async () => {
     const approvedAmount = await pairContract.allowance(userAddress, sushiRollContract.address);
     if (!approvedAmount.eq(0) && approvedAmount.gte(amountToMigrate)) {
       setApproval(true);
     } else {
       setApproval(false);
     }
-  }, [signatureSelected, amountToMigrate, pairContract, pair, userAddress]);
+  }, [signatureSelected, amountToMigrate, pairContract, userAddress, sushiRollContract]);
+
+  useEffect(() => {
+    checkAllowance();
+  }, [checkAllowance]);
 
   const onMigrateClick = async () => {
     let migrateTx;
