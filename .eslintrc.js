@@ -23,5 +23,6 @@ module.exports = {
   ],
   rules: {
     'react/prop-types': 0,
+    'react-hooks/exhaustive-deps': 0,
   },
 };
