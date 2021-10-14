@@ -52,13 +52,12 @@ const useMigrate = (
     } catch (err) {
       setError('Could not perform migrate transaction');
     }
+    if (!migrateTx) return;
     setLoading(true);
-    if (migrateTx) {
-      await migrateTx.wait();
-      updateBalance();
-      setApproval(false);
-      setError(undefined);
-    }
+    await migrateTx.wait();
+    updateBalance();
+    setApproval(false);
+    setError(undefined);
     setLoading(false);
   };
 
@@ -69,12 +68,11 @@ const useMigrate = (
     } catch (err) {
       setError('Could not approve token to migrate');
     }
+    if (!approveTx) return;
     setLoading(true);
-    if (approveTx) {
-      await approveTx.wait();
-      setApproval(true);
-      setError(undefined);
-    }
+    await approveTx.wait();
+    setApproval(true);
+    setError(undefined);
     setLoading(false);
   };
 

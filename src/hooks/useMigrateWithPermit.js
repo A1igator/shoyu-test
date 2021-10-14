@@ -54,13 +54,12 @@ const useMigrateWithPermit = (
     } catch (err) {
       setError('Could not perform migrate transaction');
     }
+    if (!migrateTx) return;
     setLoading(true);
-    if (migrateTx) {
-      await migrateTx.wait();
-      updateBalance();
-      setApproval(false);
-      setError(undefined);
-    }
+    await migrateTx.wait();
+    updateBalance();
+    setApproval(false);
+    setError(undefined);
     setLoading(false);
   };
 
@@ -81,16 +80,15 @@ const useMigrateWithPermit = (
     } catch (err) {
       setError('Could not approve token to migrate');
     }
-    if (signResult) {
-      const { v, r, s } = signResult;
-      setApproval({
-        v,
-        r,
-        s,
-        deadline,
-      });
-      setError(undefined);
-    }
+    if (!signResult) return;
+    const { v, r, s } = signResult;
+    setApproval({
+      v,
+      r,
+      s,
+      deadline,
+    });
+    setError(undefined);
     setLoading(false);
   };
 
