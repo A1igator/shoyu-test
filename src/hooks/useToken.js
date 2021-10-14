@@ -1,12 +1,14 @@
 import { Fetcher } from '@uniswap/sdk';
 import { useEffect, useState } from 'react';
+import useSignerContext from './useSignerContext';
 
-const useToken = (token, signer, setError, chainId) => {
+const useToken = (token, setError) => {
   const [tokenData, setTokenData] = useState();
+  const { signer, chainId } = useSignerContext();
 
   useEffect(() => {
     if (!token) return;
-    Fetcher.fetchTokenData(chainId, token, signer)
+    Fetcher.fetchTokenData(chainId, token)
       .then((tokenInfo) => {
         setTokenData(tokenInfo);
         setError(undefined);

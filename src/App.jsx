@@ -4,6 +4,7 @@ import TokenList from './components/TokenList';
 import UniswapMigrate from './components/UniswapMigrate';
 import ConnectWalletButton from './components/ConnectWalletButton';
 import 'semantic-ui-css/semantic.min.css';
+import SignerContextProvider from './components/SignerContextProvider';
 
 const Container = styled.div`
   background: #1B1C1D;
@@ -20,22 +21,19 @@ const ContentContainer = styled.div`
 
 function App() {
   const [signer, setSigner] = useState();
-  const [userAddress, setUserAddress] = useState('Connect Wallet');
-  const [chainId, setChainId] = useState();
 
   return (
-    <Container>
-      <ConnectWalletButton
-        setSigner={setSigner}
-        setUserAddress={setUserAddress}
-        userAddress={userAddress}
-        setChainId={setChainId}
-      />
-      <ContentContainer>
-        <TokenList />
-        <UniswapMigrate signer={signer} userAddress={userAddress} chainId={chainId} />
-      </ContentContainer>
-    </Container>
+    <SignerContextProvider signer={signer}>
+      <Container>
+        <ConnectWalletButton
+          setSigner={setSigner}
+        />
+        <ContentContainer>
+          <TokenList />
+          <UniswapMigrate />
+        </ContentContainer>
+      </Container>
+    </SignerContextProvider>
   );
 }
 

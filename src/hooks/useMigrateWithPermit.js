@@ -1,16 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useCallback, useEffect, useState,
+} from 'react';
 import { signERC2612Permit } from 'eth-permit';
 import { ethers } from 'ethers';
 import getTokenLiqudity from '../functions/getTokenLiquidity';
 import { useSushiRollContract, useUniPosContract } from './useContract';
+import useSignerContext from './useSignerContext';
 
 const useMigrateWithPermit = (
-  signer,
   pair,
   amountToMigrate,
   updateBalance,
   setError,
-  userAddress,
   signatureSelected,
 ) => {
   const { liquidityToken, tokenAmounts } = pair;
@@ -18,8 +19,9 @@ const useMigrateWithPermit = (
   const [loading, setLoading] = useState(false);
   const [approval, setApproval] = useState();
 
-  const pairContract = useUniPosContract(liquidityToken.address, signer);
-  const sushiRollContract = useSushiRollContract(signer);
+  const { signer, userAddress } = useSignerContext();
+  const pairContract = useUniPosContract(liquidityToken.address);
+  const sushiRollContract = useSushiRollContract();
 
   const checkAllowance = useCallback(async () => {
     setApproval(false);

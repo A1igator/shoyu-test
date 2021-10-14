@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useState,
+} from 'react';
 import { Checkbox, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
@@ -7,6 +9,7 @@ import useMigrate from '../hooks/useMigrate';
 import useMigrateWithPermit from '../hooks/useMigrateWithPermit';
 import { useUniPosContract } from '../hooks/useContract';
 import useUniPair from '../hooks/useUniPair';
+import useSignerContext from '../hooks/useSignerContext';
 
 const Container = styled.div`
   display: flex;
@@ -48,7 +51,7 @@ const TokenInput = styled(Input)`
   width: 380px;
 `;
 
-function UniswapMigrate({ signer, userAddress, chainId }) {
+function UniswapMigrate() {
   const [uniswapBalance, setUniswapBalance] = useState();
   const [tokenA, setTokenA] = useState();
   const [tokenB, setTokenB] = useState();
@@ -56,8 +59,9 @@ function UniswapMigrate({ signer, userAddress, chainId }) {
   const [signatureSelected, setSignatureSelected] = useState(false);
   const [error, setError] = useState();
 
-  const { pair } = useUniPair(tokenA, tokenB, signer, setError, chainId);
-  const pairContract = useUniPosContract(pair?.liquidityToken.address, signer?.provider);
+  const { signer, chainId, userAddress } = useSignerContext();
+  const { pair } = useUniPair(tokenA, tokenB, setError);
+  const pairContract = useUniPosContract(pair?.liquidityToken.address);
 
   const updateBalance = useCallback(async () => {
     if (!pairContract) return;
@@ -96,7 +100,7 @@ function UniswapMigrate({ signer, userAddress, chainId }) {
               <AmountToMigrateContainer>
                 <Input
                   inverted
-                  value={ethers.utils.formatUnits(amountToMigrate, 18)}
+                  value={Number(ethers.utils.formatUnits(amountToMigrate, 18))}
                   onChange={(_, { value }) => {
                     if (value !== '' && !Number.isNaN(+value) && ethers.utils.parseUnits(value, 18).lte(uniswapBalance)) {
                       setAmountToMigrate(ethers.utils.parseUnits(value, 18));
@@ -122,13 +126,11 @@ function UniswapMigrate({ signer, userAddress, chainId }) {
                   <div>Use signature</div>
                 </CheckBoxContainer>
                 <MigrateWithApproval
-                  signer={signer}
                   pair={pair}
                   amountToMigrate={amountToMigrate}
                   useMigrate={signatureSelected ? useMigrateWithPermit : useMigrate}
                   updateBalance={updateBalance}
                   setError={setError}
-                  userAddress={userAddress}
                   signatureSelected={signatureSelected}
                 />
               </ButtonContainer>

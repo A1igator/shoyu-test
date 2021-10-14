@@ -2,23 +2,22 @@ import { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import getTokenLiqudity from '../functions/getTokenLiquidity';
 import { useSushiRollContract, useUniPosContract } from './useContract';
+import useSignerContext from './useSignerContext';
 
 const useMigrate = (
-  signer,
   pair,
   amountToMigrate,
   updateBalance,
   setError,
-  userAddress,
   signatureSelected,
 ) => {
-  const { liquidityToken, tokenAmounts } = pair;
-
   const [loading, setLoading] = useState(false);
   const [approval, setApproval] = useState();
+  const { userAddress } = useSignerContext();
+  const { liquidityToken, tokenAmounts } = pair;
 
-  const pairContract = useUniPosContract(liquidityToken.address, signer);
-  const sushiRollContract = useSushiRollContract(signer);
+  const pairContract = useUniPosContract(liquidityToken.address);
+  const sushiRollContract = useSushiRollContract();
 
   const checkAllowance = useCallback(async () => {
     const approvedAmount = await pairContract.allowance(userAddress, sushiRollContract.address);

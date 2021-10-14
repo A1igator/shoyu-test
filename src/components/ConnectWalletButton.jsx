@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from 'semantic-ui-react';
 import { ethers } from 'ethers';
+import useSignerContext from '../hooks/useSignerContext';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -15,12 +16,12 @@ const ConnectButton = styled(Button)`
 
 function ConnectWalletButton({
   setSigner,
-  userAddress,
-  setUserAddress,
-  setChainId,
 }) {
+  const { userAddress } = useSignerContext();
+
   const onConnectClick = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+    if (!window.ethereum) return;
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send('eth_requestAccounts', []);
     provider.on('network', (_, oldNetwork) => {
       // When a Provider makes its initial connection, it emits a "network"
@@ -32,15 +33,12 @@ function ConnectWalletButton({
     });
     const signer = provider.getSigner();
     setSigner(signer);
-    setUserAddress(await signer.getAddress());
-    const network = await signer.provider.getNetwork();
-    setChainId(network.chainId);
   };
 
   return (
     <ButtonContainer>
       <ConnectButton
-        disabled={!(userAddress === 'Connect Wallet')}
+        // disabled={!(userAddress === 'Connect Wallet')}
         onClick={onConnectClick}
       >
         {userAddress}
