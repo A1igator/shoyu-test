@@ -100,7 +100,7 @@ function UniswapMigrate() {
               <AmountToMigrateContainer>
                 <Input
                   inverted
-                  value={Number(ethers.utils.formatUnits(amountToMigrate, 18))}
+                  value={ethers.utils.formatUnits(amountToMigrate, 18)}
                   onChange={(_, { value }) => {
                     if (value !== '' && !Number.isNaN(+value) && ethers.utils.parseUnits(value, 18).lte(uniswapBalance)) {
                       setAmountToMigrate(ethers.utils.parseUnits(value, 18));
