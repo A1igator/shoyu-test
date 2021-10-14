@@ -23,13 +23,13 @@ const useMigrateWithPermit = (
   const pairContract = useUniPosContract(liquidityToken.address);
   const sushiRollContract = useSushiRollContract();
 
-  const checkAllowance = useCallback(async () => {
+  const resetApproval = useCallback(async () => {
     setApproval(false);
   }, [signatureSelected, amountToMigrate, pairContract, userAddress, sushiRollContract]);
 
   useEffect(() => {
-    checkAllowance();
-  }, [checkAllowance]);
+    resetApproval();
+  }, [resetApproval]);
 
   const onMigrateClick = async () => {
     const totalSupply = await pairContract.totalSupply();
@@ -81,12 +81,16 @@ const useMigrateWithPermit = (
       setError('Could not approve token to migrate');
     }
     if (!signResult) return;
+    const id = setTimeout(() => {
+      setApproval(false);
+    }, deadline * 1000 - Date.now());
     const { v, r, s } = signResult;
     setApproval({
       v,
       r,
       s,
       deadline,
+      id,
     });
     setError(undefined);
     setLoading(false);

@@ -20,6 +20,12 @@ const useMigrate = (
   const sushiRollContract = useSushiRollContract();
 
   const checkAllowance = useCallback(async () => {
+    // reset timeout from useMigrateWithPermit.
+    const { id } = approval;
+    if (id) {
+      clearTimeout(id);
+    }
+
     const approvedAmount = await pairContract.allowance(userAddress, sushiRollContract.address);
     if (!approvedAmount.eq(0) && approvedAmount.gte(amountToMigrate)) {
       setApproval(true);
