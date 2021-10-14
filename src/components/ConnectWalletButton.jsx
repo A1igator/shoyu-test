@@ -33,17 +33,8 @@ function ConnectWalletButton({
     const { ethereum } = window;
     if (!ethereum) return;
     if (userAddress === 'Connect Wallet') return;
-    ethereum.on('chainChanged', () => {
-      // When a Provider makes its initial connection, it emits a "network"
-      // event with a null oldNetwork along with the newNetwork. So, if the
-      // oldNetwork exists, it represents a changing network
-      onConnectClick();
-    });
-    ethereum.on('accountsChanged', () => {
-      // Handle the new accounts, or lack thereof.
-      // "accounts" will always be an array, but it can be empty.
-      onConnectClick();
-    });
+    ethereum.on('chainChanged', onConnectClick);
+    ethereum.on('accountsChanged', onConnectClick);
   }, [isConnected]);
 
   return (
