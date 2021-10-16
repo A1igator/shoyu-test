@@ -2,19 +2,23 @@ import { Fetcher } from '@uniswap/sdk';
 import { useEffect, useState } from 'react';
 import useSignerContext from './useSignerContext';
 
-const useToken = (token, setError) => {
+const useToken = (token, setError, name) => {
   const [tokenData, setTokenData] = useState();
   const { signer, chainId } = useSignerContext();
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setTokenData(undefined);
+      setError(undefined);
+      return;
+    }
     Fetcher.fetchTokenData(chainId, token)
       .then((tokenInfo) => {
         setTokenData(tokenInfo);
         setError(undefined);
       })
       .catch(() => {
-        setError('Token A: Invalid Token Address');
+        setError(`Token ${name}: Invalid Token Address`);
       });
   }, [token, chainId, signer, setError]);
 

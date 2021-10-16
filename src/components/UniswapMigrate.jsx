@@ -81,21 +81,23 @@ function UniswapMigrate() {
         <>
           <TokenInputContainer>
             <TokenInput
-              placeholder="token 1"
+              placeholder="token A"
               onChange={(_, { value }) => {
                 setTokenA(value);
               }}
               inverted
             />
             <TokenInput
-              placeholder="token 2"
+              placeholder="token B"
               onChange={(_, { value }) => {
                 setTokenB(value);
               }}
               inverted
             />
           </TokenInputContainer>
-          {uniswapBalance && !error?.includes(':') && (
+          {pair && uniswapBalance
+            // Errors must not be related to getting uni info
+            && !error?.includes(':') && (
             <>
               <AmountToMigrateContainer>
                 <Input

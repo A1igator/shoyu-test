@@ -7,11 +7,15 @@ const useUniPair = (tokenA, tokenB, setError) => {
   const [pair, setPair] = useState();
   const { signer } = useSignerContext();
 
-  const { tokenData: tokenAData } = useToken(tokenA, setError);
-  const { tokenData: tokenBData } = useToken(tokenB, setError);
+  const { tokenData: tokenAData } = useToken(tokenA, setError, 'A');
+  const { tokenData: tokenBData } = useToken(tokenB, setError, 'B');
 
   useEffect(() => {
-    if (!(tokenAData && tokenBData)) return;
+    if (!(tokenAData && tokenBData)) {
+      setPair(undefined);
+      setError(undefined);
+      return;
+    }
     Fetcher.fetchPairData(tokenAData, tokenBData, signer)
       .then((uniPair) => {
         setPair(uniPair);

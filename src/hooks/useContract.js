@@ -17,11 +17,9 @@ export function useContract(address, ABI) {
 }
 
 export function useUniPosContract(address) {
-  const { signer } = useSignerContext();
-  return useContract(address, UniPosABI, signer);
+  return useContract(address, UniPosABI);
 }
 
 export function useSushiRollContract() {
-  const { signer } = useSignerContext();
-  return useContract('0xCaAbdD9Cf4b61813D4a52f980d6BC1B713FE66F5', SushiRollABI, signer);
+  return useContract('0xCaAbdD9Cf4b61813D4a52f980d6BC1B713FE66F5', SushiRollABI);
 }

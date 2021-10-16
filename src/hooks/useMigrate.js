@@ -21,7 +21,7 @@ const useMigrate = (
 
   const checkAllowance = useCallback(async () => {
     // reset timeout from useMigrateWithPermit.
-    const { id } = approval;
+    const id = approval?.id;
     if (id) {
       clearTimeout(id);
     }
