@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import useSignerContext from './useSignerContext';
 import useToken from './useToken';
 
-const useUniPair = (tokenA, tokenB, setError) => {
+const useUniPair = (tokenA, tokenB) => {
   const [pair, setPair] = useState();
+  const [error, setError] = useState();
   const { signer } = useSignerContext();
 
   const { tokenData: tokenAData } = useToken(tokenA, setError, 'A');
@@ -21,11 +22,11 @@ const useUniPair = (tokenA, tokenB, setError) => {
         setPair(uniPair);
         setError(undefined);
       }).catch(() => {
-        setError('Pair: not found on Uniswap');
+        setError('Pair not found on Uniswap');
       });
   }, [tokenAData, tokenBData, signer, setError]);
 
-  return { pair };
+  return { pair, error };
 };
 
 export default useUniPair;

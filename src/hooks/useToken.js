@@ -18,7 +18,7 @@ const useToken = (token, setError, name) => {
         setError(undefined);
       })
       .catch(() => {
-        setError(`Token ${name}: Invalid Token Address`);
+        setError(`Token ${name} address is invalid`);
       });
   }, [token, chainId, signer, setError]);
 

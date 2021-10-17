@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 export const SignerContext = React.createContext();
 
-const SignerContextProvider = ({ children, signer }) => {
+function SignerContextProvider({ children, signer }) {
   const [userAddress, setUserAddress] = useState('Connect Wallet');
   const [chainId, setChainId] = useState();
 
@@ -26,6 +26,6 @@ const SignerContextProvider = ({ children, signer }) => {
       {children}
     </SignerContext.Provider>
   );
-};
+}
 
 export default SignerContextProvider;

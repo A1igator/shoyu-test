@@ -14,9 +14,7 @@ const ConnectButton = styled(Button)`
   margin: 0 !important;
 `;
 
-function ConnectWalletButton({
-  setSigner,
-}) {
+function ConnectWalletButton({ setSigner }) {
   const { userAddress } = useSignerContext();
   const isConnected = userAddress !== 'Connect Wallet';
 

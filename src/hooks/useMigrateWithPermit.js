@@ -65,7 +65,6 @@ const useMigrateWithPermit = (
 
   const onApproveClick = async () => {
     let signResult;
-    setLoading(true);
     // 10 Minutes from now
     const deadline = Math.round(Date.now() / 1000 + 10 * 60).toString();
     try {
@@ -93,7 +92,6 @@ const useMigrateWithPermit = (
       id,
     });
     setError(undefined);
-    setLoading(false);
   };
 
   return {

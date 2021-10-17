@@ -3,13 +3,14 @@ import React, {
 } from 'react';
 import { Checkbox, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
 import MigrateWithApproval from './MigrateWithApproval';
 import useMigrate from '../hooks/useMigrate';
 import useMigrateWithPermit from '../hooks/useMigrateWithPermit';
 import { useUniPosContract } from '../hooks/useContract';
 import useUniPair from '../hooks/useUniPair';
 import useSignerContext from '../hooks/useSignerContext';
+import AmountToMigrateInput from './AmountToMigrateInput';
+import Error from './Error';
 
 const Container = styled.div`
   display: flex;
@@ -29,15 +30,15 @@ const TokenInputContainer = styled.div`
   flex: 2;
 `;
 
-const Error = styled.div`
-  color: red;
+const TokenInput = styled(Input)`
+  width: 380px;
 `;
 
-const AmountToMigrateContainer = styled.div`
-  flex: 1;
+const MigrateButtonPlaceHolder = styled.div`
+  height: 56px;
 `;
 
-const ButtonContainer = styled.div`
+const MigrateButtonContainer = styled.div`
   flex-direction: column;
   display: flex;
 `;
@@ -47,20 +48,17 @@ const CheckBoxContainer = styled.div`
   display: flex;
 `;
 
-const TokenInput = styled(Input)`
-  width: 380px;
-`;
-
 function UniswapMigrate() {
   const [uniswapBalance, setUniswapBalance] = useState();
   const [tokenA, setTokenA] = useState();
   const [tokenB, setTokenB] = useState();
-  const [amountToMigrate, setAmountToMigrate] = useState(0);
+  const [amountToMigrateParsed, setAmountToMigrateParsed] = useState(0);
   const [signatureSelected, setSignatureSelected] = useState(false);
   const [error, setError] = useState();
+  const [balanceError, setBalanceError] = useState();
 
   const { signer, chainId, userAddress } = useSignerContext();
-  const { pair } = useUniPair(tokenA, tokenB, setError);
+  const { pair, error: uniPairError } = useUniPair(tokenA, tokenB);
   const pairContract = useUniPosContract(pair?.liquidityToken.address);
 
   const updateBalance = useCallback(async () => {
@@ -95,50 +93,38 @@ function UniswapMigrate() {
               inverted
             />
           </TokenInputContainer>
-          {pair && uniswapBalance
-            // Errors must not be related to getting uni info
-            && !error?.includes(':') && (
+          {pair && uniswapBalance && !uniPairError && (
             <>
-              <AmountToMigrateContainer>
-                <Input
-                  inverted
-                  value={ethers.utils.formatUnits(amountToMigrate, 18)}
-                  onChange={(_, { value }) => {
-                    if (value !== '' && !Number.isNaN(+value) && ethers.utils.parseUnits(value, 18).lte(uniswapBalance)) {
-                      setAmountToMigrate(ethers.utils.parseUnits(value, 18));
-                    }
-                  }}
-                  action={
-                    {
-                      inverted: true,
-                      content: `Total Balance: ${ethers.utils.formatUnits(uniswapBalance, 18) || ''}`,
-                      onClick: () => {
-                        setAmountToMigrate(uniswapBalance);
-                      },
-                    }
-                  }
-                />
-              </AmountToMigrateContainer>
-              <ButtonContainer>
-                <CheckBoxContainer>
-                  <Checkbox onChange={() => {
-                    setSignatureSelected(!signatureSelected);
-                  }}
-                  />
-                  <div>Use signature</div>
-                </CheckBoxContainer>
-                <MigrateWithApproval
-                  pair={pair}
-                  amountToMigrate={amountToMigrate}
-                  useMigrate={signatureSelected ? useMigrateWithPermit : useMigrate}
-                  updateBalance={updateBalance}
-                  setError={setError}
-                  signatureSelected={signatureSelected}
-                />
-              </ButtonContainer>
+              <AmountToMigrateInput
+                setAmountToMigrateParsed={setAmountToMigrateParsed}
+                setBalanceError={setBalanceError}
+                balanceError={balanceError}
+                uniswapBalance={uniswapBalance}
+              />
+              <MigrateButtonContainer>
+                {!balanceError ? (
+                  <>
+                    <CheckBoxContainer>
+                      <Checkbox onChange={() => {
+                        setSignatureSelected(!signatureSelected);
+                      }}
+                      />
+                      <div>Use signature</div>
+                    </CheckBoxContainer>
+                    <MigrateWithApproval
+                      pair={pair}
+                      amountToMigrate={amountToMigrateParsed}
+                      useMigrate={signatureSelected ? useMigrateWithPermit : useMigrate}
+                      updateBalance={updateBalance}
+                      setError={setError}
+                      signatureSelected={signatureSelected}
+                    />
+                  </>
+                ) : <MigrateButtonPlaceHolder />}
+              </MigrateButtonContainer>
             </>
           )}
-          <Error>{error}</Error>
+          <Error>{error || uniPairError}</Error>
         </>
       )}
     </Container>
