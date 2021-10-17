@@ -100,6 +100,7 @@ function UniswapMigrate() {
                 setBalanceError={setBalanceError}
                 balanceError={balanceError}
                 uniswapBalance={uniswapBalance}
+                pair={pair}
               />
               <MigrateButtonContainer>
                 {!balanceError ? (

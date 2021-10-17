@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from 'semantic-ui-react';
 import styled from 'styled-components';
 import Error from './Error';
@@ -9,9 +9,15 @@ const AmountToMigrateContainer = styled.div`
 `;
 
 function AmountToMigrateInput({
-  setAmountToMigrateParsed, setBalanceError, balanceError, uniswapBalance,
+  setAmountToMigrateParsed, setBalanceError, balanceError, uniswapBalance, pair,
 }) {
   const [amountToMigrate, setAmountToMigrate] = useState(0);
+
+  useEffect(() => {
+    setAmountToMigrate(0);
+    setAmountToMigrateParsed(0);
+    setBalanceError(undefined);
+  }, [pair, uniswapBalance]);
 
   return (
     <AmountToMigrateContainer>
