@@ -1,4 +1,4 @@
-import { TokenAmount } from '@uniswap/sdk';
+import { Percent, TokenAmount } from '@uniswap/sdk';
 import memoize from 'memoizee';
 
 const getTokenLiqudity = (
@@ -14,8 +14,8 @@ const getTokenLiqudity = (
       new TokenAmount(liquidityToken, totalSupply),
       new TokenAmount(liquidityToken, amountToMigrate),
     );
-    return ((tokenLiquidity.numerator / tokenLiquidity.denominator) * 0.995)
-      .toFixed(tokenAmount.currency.decimals);
+    const slippage = new Percent(995, 1000);
+    return tokenLiquidity.multiply(slippage).toFixed(tokenAmount.currency.decimals);
   });
 };
 
