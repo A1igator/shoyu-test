@@ -11,14 +11,13 @@ const useMigrateWithPermit = (
   pair,
   amountToMigrate,
   updateBalance,
-  setError,
   signatureSelected,
 ) => {
-  const { liquidityToken, tokenAmounts } = pair;
-
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
   const [approval, setApproval] = useState();
 
+  const { liquidityToken, tokenAmounts } = pair;
   const { signer, userAddress } = useSignerContext();
   const pairContract = useUniPosContract(liquidityToken.address);
   const sushiRollContract = useSushiRollContract();
@@ -95,7 +94,7 @@ const useMigrateWithPermit = (
   };
 
   return {
-    loading, approval, onMigrateClick, onApproveClick,
+    loading, error, approval, onMigrateClick, onApproveClick,
   };
 };
 

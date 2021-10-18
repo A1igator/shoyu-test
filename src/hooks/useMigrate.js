@@ -8,11 +8,12 @@ const useMigrate = (
   pair,
   amountToMigrate,
   updateBalance,
-  setError,
   signatureSelected,
 ) => {
   const [loading, setLoading] = useState(false);
   const [approval, setApproval] = useState();
+  const [error, setError] = useState();
+
   const { userAddress } = useSignerContext();
   const { liquidityToken, tokenAmounts } = pair;
 
@@ -83,7 +84,7 @@ const useMigrate = (
   };
 
   return {
-    loading, approval, onMigrateClick, onApproveClick,
+    loading, error, approval, onMigrateClick, onApproveClick,
   };
 };
 

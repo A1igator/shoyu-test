@@ -6,8 +6,8 @@ import useToken from './useToken';
 const useUniPair = (tokenA, tokenB) => {
   const [pair, setPair] = useState();
   const [error, setError] = useState();
-  const { signer } = useSignerContext();
 
+  const { signer } = useSignerContext();
   const { tokenData: tokenAData } = useToken(tokenA, setError, 'A');
   const { tokenData: tokenBData } = useToken(tokenB, setError, 'B');
 

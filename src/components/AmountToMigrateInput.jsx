@@ -43,7 +43,7 @@ function AmountToMigrateInput({
         }}
         action={{
           inverted: true,
-          content: `Total Balance: ${ethers.utils.formatUnits(uniswapBalance, 18) || ''}`,
+          content: `Total Balance: ${ethers.utils.formatUnits(uniswapBalance || '0', 18)}`,
           onClick: () => {
             setAmountToMigrate(ethers.utils.formatUnits(uniswapBalance, 18));
             setAmountToMigrateParsed(uniswapBalance);

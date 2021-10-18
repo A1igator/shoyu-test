@@ -4,6 +4,7 @@ import useSignerContext from './useSignerContext';
 
 const useToken = (token, setError, name) => {
   const [tokenData, setTokenData] = useState();
+
   const { signer, chainId } = useSignerContext();
 
   useEffect(() => {
