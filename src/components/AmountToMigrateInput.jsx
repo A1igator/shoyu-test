@@ -19,35 +19,39 @@ function AmountToMigrateInput({
     setBalanceError(undefined);
   }, [pair, uniswapBalance]);
 
+  const onInputChange = (_, { value }) => {
+    let valueParsed;
+    // Ensure input works
+    try {
+      valueParsed = ethers.utils.parseUnits(value || '0', 18);
+    } catch (err) {
+      return;
+    }
+
+    setAmountToMigrate(value);
+    setAmountToMigrateParsed(valueParsed);
+    if (valueParsed.gt(uniswapBalance)) {
+      setBalanceError('Not enough balance');
+    } else {
+      setBalanceError(undefined);
+    }
+  };
+
+  const onMaxClick = () => {
+    setAmountToMigrate(ethers.utils.formatUnits(uniswapBalance, 18));
+    setAmountToMigrateParsed(uniswapBalance);
+  };
+
   return (
     <AmountToMigrateContainer>
       <Input
         inverted
         value={amountToMigrate}
-        onChange={(_, { value }) => {
-          let valueParsed;
-          // Ensure input works
-          try {
-            valueParsed = ethers.utils.parseUnits(value || '0', 18);
-          } catch (err) {
-            return;
-          }
-
-          setAmountToMigrate(value);
-          setAmountToMigrateParsed(valueParsed);
-          if (valueParsed.gt(uniswapBalance)) {
-            setBalanceError('Not enough balance');
-          } else {
-            setBalanceError(undefined);
-          }
-        }}
+        onChange={onInputChange}
         action={{
           inverted: true,
           content: `Total Balance: ${ethers.utils.formatUnits(uniswapBalance || '0', 18)}`,
-          onClick: () => {
-            setAmountToMigrate(ethers.utils.formatUnits(uniswapBalance, 18));
-            setAmountToMigrateParsed(uniswapBalance);
-          },
+          onClick: onMaxClick,
         }}
       />
       <Error>{balanceError}</Error>

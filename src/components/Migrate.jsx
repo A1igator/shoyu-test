@@ -4,12 +4,7 @@ import styled from 'styled-components';
 import MigrateButton from './MigrateButton';
 import useMigrate from '../hooks/useMigrate';
 import useMigrateWithPermit from '../hooks/useMigrateWithPermit';
-
-const CenterContainer = styled.div`
-  flex-direction: row;
-  display: flex;
-  justify-content: center;
-`;
+import CenterContainer from './CenterContainer';
 
 const MigrateContainer = styled.div`
   flex-direction: column;
