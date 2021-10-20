@@ -1,3 +1,4 @@
+/* eslint-disable no-confusing-arrow */
 import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { Input } from 'semantic-ui-react';
@@ -5,7 +6,7 @@ import styled from 'styled-components';
 import Error from './Error';
 
 const AmountToMigrateContainer = styled.div`
-  flex: 1;
+  flex: ${(props) => props.balanceError ? 2 : 1};
 `;
 
 function AmountToMigrateInput({
@@ -43,7 +44,7 @@ function AmountToMigrateInput({
   };
 
   return (
-    <AmountToMigrateContainer>
+    <AmountToMigrateContainer balanceError={balanceError}>
       <Input
         inverted
         value={amountToMigrate}

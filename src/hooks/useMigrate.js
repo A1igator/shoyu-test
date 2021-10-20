@@ -11,11 +11,11 @@ const useMigrate = (
   signatureSelected,
 ) => {
   const [loading, setLoading] = useState(false);
-  const [approval, setApproval] = useState();
   const [error, setError] = useState();
+  const [approval, setApproval] = useState();
 
-  const { userAddress } = useSignerContext();
   const { liquidityToken, tokenAmounts } = pair;
+  const { userAddress } = useSignerContext();
 
   const pairContract = useUniPosContract(liquidityToken.address);
   const sushiRollContract = useSushiRollContract();
