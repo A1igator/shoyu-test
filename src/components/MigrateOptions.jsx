@@ -11,7 +11,7 @@ const MigrateContainer = styled.div`
   display: flex;
 `;
 
-function Migrate({
+function MigrateOptions({
   amountToMigrate, pair, updateBalance,
 }) {
   const [signatureSelected, setSignatureSelected] = useState(false);
@@ -36,4 +36,4 @@ function Migrate({
   );
 }
 
-export default Migrate;
+export default MigrateOptions;

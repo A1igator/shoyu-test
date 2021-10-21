@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AmountToMigrateInput from './AmountToMigrateInput';
-import Migrate from './Migrate';
+import MigrateOptions from './MigrateOptions';
 
 function MigrateSection({ uniswapBalance, pair, updateBalance }) {
   const [amountToMigrateParsed, setAmountToMigrateParsed] = useState(0);
@@ -17,7 +17,7 @@ function MigrateSection({ uniswapBalance, pair, updateBalance }) {
       />
       {!balanceError
           && (
-          <Migrate
+          <MigrateOptions
             amountToMigrate={amountToMigrateParsed}
             pair={pair}
             updateBalance={updateBalance}
