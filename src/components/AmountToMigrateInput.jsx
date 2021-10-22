@@ -1,23 +1,23 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { Input } from 'semantic-ui-react';
 import styled from 'styled-components';
 import Error from './Error';
 
 const AmountToMigrateContainer = styled.div`
-  flex: ${({ balanceError }) => (balanceError ? 2 : 1)};
+  flex: 1;
 `;
 
 function AmountToMigrateInput({
-  setAmountToMigrateParsed, setBalanceError, balanceError, uniswapBalance, pair,
+  setAmountToMigrateParsed, setBalanceError, balanceError, uniswapBalance, pair, disabled,
 }) {
   const [amountToMigrate, setAmountToMigrate] = useState(0);
 
   useEffect(() => {
     setAmountToMigrate(0);
-    setAmountToMigrateParsed(0);
+    setAmountToMigrateParsed(BigNumber.from(0));
     setBalanceError(undefined);
-  }, [pair, uniswapBalance]);
+  }, [pair, uniswapBalance, disabled]);
 
   const onInputChange = (_, { value }) => {
     let valueParsed;
@@ -40,6 +40,7 @@ function AmountToMigrateInput({
   const onMaxClick = () => {
     setAmountToMigrate(ethers.utils.formatUnits(uniswapBalance, 18));
     setAmountToMigrateParsed(uniswapBalance);
+    setBalanceError(undefined);
   };
 
   return (
@@ -48,10 +49,12 @@ function AmountToMigrateInput({
         inverted
         value={amountToMigrate}
         onChange={onInputChange}
+        disabled={disabled}
         action={{
           inverted: true,
-          content: `Total Balance: ${ethers.utils.formatUnits(uniswapBalance || '0', 18)}`,
+          content: `Total Balance: ${ethers.utils.formatUnits(uniswapBalance, 18)}`,
           onClick: onMaxClick,
+          disabled,
         }}
       />
       <Error>{balanceError}</Error>

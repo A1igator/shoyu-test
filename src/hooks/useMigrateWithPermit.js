@@ -14,8 +14,8 @@ const useMigrateWithPermit = (
   signatureSelected,
 ) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
-  const [approval, setApproval] = useState();
+  const [error, setError] = useState('');
+  const [approval, setApproval] = useState(false);
 
   const { liquidityToken, tokenAmounts } = pair;
   const { signer, userAddress } = useSignerContext();
@@ -24,7 +24,13 @@ const useMigrateWithPermit = (
 
   const resetApproval = useCallback(async () => {
     setApproval(false);
-  }, [signatureSelected, amountToMigrate, pairContract, userAddress, sushiRollContract]);
+  }, [
+    pairContract,
+    userAddress,
+    sushiRollContract,
+    amountToMigrate,
+    signatureSelected,
+  ]);
 
   useEffect(() => {
     resetApproval();
@@ -79,6 +85,7 @@ const useMigrateWithPermit = (
       setError('Could not approve token to migrate');
     }
     if (!signResult) return;
+    // Not using 10 * 60 * 1000 because needs to be accurate to deadline.
     const id = setTimeout(() => {
       setApproval(false);
     }, deadline * 1000 - Date.now());

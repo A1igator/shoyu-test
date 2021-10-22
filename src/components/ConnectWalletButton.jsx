@@ -30,7 +30,7 @@ function ConnectWalletButton({ setSigner }) {
   useEffect(() => {
     const { ethereum } = window;
     if (!ethereum) return;
-    if (userAddress === 'Connect Wallet') return;
+    if (!isConnected) return;
     ethereum.on('chainChanged', onConnectClick);
     ethereum.on('accountsChanged', onConnectClick);
   }, [isConnected]);

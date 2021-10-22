@@ -5,11 +5,12 @@ import useToken from './useToken';
 
 const useUniPair = (tokenA, tokenB) => {
   const [pair, setPair] = useState();
-  const [error, setError] = useState();
+  const [error, setError] = useState('');
 
   const { signer } = useSignerContext();
-  const { tokenData: tokenAData } = useToken(tokenA, setError, 'A');
-  const { tokenData: tokenBData } = useToken(tokenB, setError, 'B');
+  const { tokenData: tokenAData, error: tokenAError } = useToken(tokenA, 'A');
+  const { tokenData: tokenBData, error: tokenBError } = useToken(tokenB, 'B');
+  const tokenError = tokenAError || tokenBError;
 
   useEffect(() => {
     if (!(tokenAData && tokenBData)) {
@@ -22,11 +23,12 @@ const useUniPair = (tokenA, tokenB) => {
         setPair(uniPair);
         setError(undefined);
       }).catch(() => {
+        setPair(undefined);
         setError('Pair not found on Uniswap');
       });
-  }, [tokenAData, tokenBData, signer, setError]);
+  }, [tokenAData, tokenBData, signer]);
 
-  return { pair, error };
+  return { pair, error, tokenError };
 };
 
 export default useUniPair;

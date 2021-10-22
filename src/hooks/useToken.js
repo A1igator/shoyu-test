@@ -2,8 +2,9 @@ import { Fetcher } from '@uniswap/sdk';
 import { useEffect, useState } from 'react';
 import useSignerContext from './useSignerContext';
 
-const useToken = (token, setError, name) => {
+const useToken = (token, name) => {
   const [tokenData, setTokenData] = useState();
+  const [error, setError] = useState('');
 
   const { signer, chainId } = useSignerContext();
 
@@ -19,11 +20,12 @@ const useToken = (token, setError, name) => {
         setError(undefined);
       })
       .catch(() => {
+        setTokenData(undefined);
         setError(`Token ${name} address is invalid`);
       });
-  }, [token, chainId, signer, setError]);
+  }, [token, chainId, signer]);
 
-  return { tokenData };
+  return { tokenData, error };
 };
 
 export default useToken;

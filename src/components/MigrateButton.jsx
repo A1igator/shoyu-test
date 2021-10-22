@@ -9,6 +9,7 @@ function MigrateButton({
   updateBalance,
   useMigrate,
   signatureSelected,
+  disabled,
 }) {
   const {
     loading,
@@ -31,6 +32,7 @@ function MigrateButton({
           onClick={approval ? onMigrateClick : onApproveClick}
           inverted
           size="large"
+          disabled={disabled || loading || amountToMigrate.eq(0)}
         >
           {approval ? 'Migrate' : 'Approve'}
         </Button>

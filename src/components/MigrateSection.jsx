@@ -1,10 +1,13 @@
+import { BigNumber } from 'ethers';
 import React, { useState } from 'react';
 import AmountToMigrateInput from './AmountToMigrateInput';
 import MigrateOptions from './MigrateOptions';
 
-function MigrateSection({ uniswapBalance, pair, updateBalance }) {
-  const [amountToMigrateParsed, setAmountToMigrateParsed] = useState(0);
-  const [balanceError, setBalanceError] = useState();
+function MigrateSection({
+  uniswapBalance, pair, updateBalance, disabled,
+}) {
+  const [amountToMigrateParsed, setAmountToMigrateParsed] = useState(BigNumber.from(0));
+  const [balanceError, setBalanceError] = useState('');
 
   return (
     <>
@@ -14,15 +17,14 @@ function MigrateSection({ uniswapBalance, pair, updateBalance }) {
         balanceError={balanceError}
         uniswapBalance={uniswapBalance}
         pair={pair}
+        disabled={disabled}
       />
-      {!balanceError
-          && (
-          <MigrateOptions
-            amountToMigrate={amountToMigrateParsed}
-            pair={pair}
-            updateBalance={updateBalance}
-          />
-          )}
+      <MigrateOptions
+        amountToMigrate={amountToMigrateParsed}
+        pair={pair}
+        updateBalance={updateBalance}
+        disabled={disabled || !!balanceError}
+      />
     </>
   );
 }

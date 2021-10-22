@@ -11,20 +11,25 @@ const useMigrate = (
   signatureSelected,
 ) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
-  const [approval, setApproval] = useState();
+  const [error, setError] = useState('');
+  const [approval, setApproval] = useState(false);
 
-  const { liquidityToken, tokenAmounts } = pair;
+  const { liquidityToken, tokenAmounts } = pair || {};
   const { userAddress } = useSignerContext();
 
-  const pairContract = useUniPosContract(liquidityToken.address);
+  const pairContract = useUniPosContract(liquidityToken?.address);
   const sushiRollContract = useSushiRollContract();
 
   const checkAllowance = useCallback(async () => {
     // reset timeout from useMigrateWithPermit.
-    const id = approval?.id;
+    const { id } = approval || {};
     if (id) {
       clearTimeout(id);
+    }
+
+    if (!pairContract || amountToMigrate.eq(0)) {
+      setApproval(false);
+      return;
     }
 
     const approvedAmount = await pairContract.allowance(userAddress, sushiRollContract.address);
@@ -33,7 +38,13 @@ const useMigrate = (
     } else {
       setApproval(false);
     }
-  }, [signatureSelected, amountToMigrate, pairContract, userAddress, sushiRollContract]);
+  }, [
+    pairContract,
+    userAddress,
+    sushiRollContract,
+    amountToMigrate,
+    signatureSelected,
+  ]);
 
   useEffect(() => {
     checkAllowance();

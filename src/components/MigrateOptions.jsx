@@ -12,16 +12,17 @@ const MigrateContainer = styled.div`
 `;
 
 function MigrateOptions({
-  amountToMigrate, pair, updateBalance,
+  amountToMigrate, pair, updateBalance, disabled,
 }) {
   const [signatureSelected, setSignatureSelected] = useState(false);
 
   return (
     <MigrateContainer>
       <CenterContainer>
-        <Checkbox onChange={() => {
-          setSignatureSelected(!signatureSelected);
-        }}
+        <Checkbox
+          onChange={(_, { checked }) => {
+            setSignatureSelected(checked);
+          }}
         />
         <div>Use signature</div>
       </CenterContainer>
@@ -31,6 +32,7 @@ function MigrateOptions({
         useMigrate={signatureSelected ? useMigrateWithPermit : useMigrate}
         updateBalance={updateBalance}
         signatureSelected={signatureSelected}
+        disabled={disabled}
       />
     </MigrateContainer>
   );

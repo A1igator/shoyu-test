@@ -28,7 +28,14 @@ const TokenInputContainer = styled.div`
   align-items: flex-start;
   flex-direction: row;
   width: 100%;
+`;
+
+const TokenInputContainerWithError = styled.div`
+  width: 100%;
   flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const TokenInput = styled(Input)`
@@ -36,12 +43,12 @@ const TokenInput = styled(Input)`
 `;
 
 function UniswapBalanceAndMigrate() {
-  const [uniswapBalance, setUniswapBalance] = useState();
+  const [uniswapBalance, setUniswapBalance] = useState(0);
   const [tokenA, setTokenA] = useState();
   const [tokenB, setTokenB] = useState();
 
   const { chainId, userAddress } = useSignerContext();
-  const { pair, error: uniPairError } = useUniPair(tokenA, tokenB);
+  const { pair, error: uniPairError, tokenError } = useUniPair(tokenA, tokenB);
   const pairContract = useUniPosContract(pair?.liquidityToken.address);
 
   const updateBalance = useCallback(async () => {
@@ -54,11 +61,18 @@ function UniswapBalanceAndMigrate() {
     updateBalance();
   }, [updateBalance]);
 
+  useEffect(() => {
+    if (uniPairError) {
+      setUniswapBalance(0);
+    }
+  }, [uniPairError]);
+
   return (
-    <Container>
+    <>
       {chainId !== 42 && <h1>Switch Network to Kovan</h1>}
       {chainId === 42 && (
-        <>
+      <Container>
+        <TokenInputContainerWithError>
           <TokenInputContainer>
             <TokenInput
               placeholder="token A"
@@ -75,17 +89,17 @@ function UniswapBalanceAndMigrate() {
               inverted
             />
           </TokenInputContainer>
-          {pair && uniswapBalance && !uniPairError && (
-          <MigrateSection
-            uniswapBalance={uniswapBalance}
-            pair={pair}
-            updateBalance={updateBalance}
-          />
-          )}
-          <Error>{uniPairError}</Error>
-        </>
+          <Error>{uniPairError || tokenError}</Error>
+        </TokenInputContainerWithError>
+        <MigrateSection
+          uniswapBalance={uniswapBalance}
+          pair={pair}
+          updateBalance={updateBalance}
+          disabled={!pair || !uniswapBalance || !!uniPairError || !!tokenError}
+        />
+      </Container>
       )}
-    </Container>
+    </>
   );
 }
 
